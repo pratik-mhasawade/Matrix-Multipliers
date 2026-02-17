@@ -13,237 +13,95 @@ About mac4_element.v
 Bit width Verification (Worst-case)
   127 × 127 = 16129  (14 bits)
   4 × 16129 = 64516  (17 bits needed)
-🚀 4×4 Pipelined Matrix Multiplication Accelerator
-Verilog RTL | Artix-7 (Basys-3) | DSP-Optimized Compute Engine
-📌 Project Overview
+# 4×4 Pipelined Matrix Multiplication Accelerator  
+**Verilog RTL | Artix-7 (Basys-3) | DSP-Optimized Compute Engine**
+
+---
+
+## 1. Project Overview
 
 This project implements a high-performance 4×4 matrix multiplication accelerator using a fully pipelined parallel MAC architecture in Verilog.
 
-The design targets the Artix-7 XC7A35T FPGA on the Basys-3 development board and demonstrates:
+The design targets the **Xilinx Artix-7 XC7A35T FPGA** on the Basys-3 development board and demonstrates:
 
-Balanced adder-tree pipelining
+- Balanced adder-tree pipelining  
+- DSP48 multiplier inference  
+- Timing-aware RTL design  
+- Deterministic latency and throughput  
 
-DSP48-based multiplier inference
+Matrix multiplication is the fundamental compute primitive behind modern AI workloads such as CNNs and Transformers. This project focuses on datapath optimization and digital architecture depth rather than system-level integration.
 
-Timing-aware RTL architecture
+---
 
-Deterministic latency & throughput
-
-Matrix multiplication is the fundamental compute primitive behind modern AI workloads such as CNNs and Transformers.
-
-🧠 Architecture Overview
+## 2. Functional Description
 
 The accelerator computes:
 
-𝐶
-=
-𝐴
-×
-𝐵
-C=A×B
+C = A × B
 
 Where A and B are 4×4 signed matrices.
 
-Each output element:
+Each output element is computed as:
 
-𝐶
-[
-𝑖
-]
-[
-𝑗
-]
-=
-∑
-𝑘
-=
-0
-3
-𝐴
-[
-𝑖
-]
-[
-𝑘
-]
-×
-𝐵
-[
-𝑘
-]
-[
-𝑗
-]
-C[i][j]=
-k=0
-∑
-3
-	​
+C[i][j] = Σ (A[i][k] × B[k][j])  for k = 0 to 3
 
-A[i][k]×B[k][j]
-Architecture Highlights
+Key features:
 
-16 parallel MAC compute elements
+- 16 parallel compute elements  
+- 3-stage pipelined MAC architecture  
+- Signed fixed-point arithmetic  
+- One output result per clock (steady state)
 
-3-stage pipelined datapath per element
+---
 
-Balanced adder-tree to reduce critical path
-
-Signed fixed-point arithmetic
-
-1 result per clock (after pipeline fill)
-
-🏗️ Micro-Architecture
+## 3. Micro-Architecture
 
 Each MAC element consists of:
 
-Stage 1 – Parallel Multiplication
+### Stage 1 – Multiplication
+- 4 parallel signed multipliers  
+- DSP48 inference  
+- Registered outputs  
 
-4 DSP48-based multipliers
+### Stage 2 – First-Level Adder Tree
+- Two parallel adders  
+- Balanced tree structure  
+- Controlled bit growth  
 
-Registered outputs
+### Stage 3 – Final Accumulation
+- Final addition  
+- Output register  
+- Valid signal alignment  
 
-Stage 2 – First-Level Adder Tree
+### Latency & Throughput
 
-Two parallel adders
+- Pipeline Depth: 3 stages  
+- Latency: 3 clock cycles  
+- Throughput: 1 result per clock (after pipeline fill)
 
-Bit-growth handling
+---
 
-Stage 3 – Final Accumulation
+## 4. Design Characteristics
 
-Final addition
+- Fully synchronous RTL  
+- Parameterized data widths  
+- Clock-enable support  
+- Balanced combinational depth  
+- DSP-aware implementation  
+- Clean valid-signal pipelining  
 
-Output register
+This design emphasizes timing closure, resource efficiency, and scalability.
 
-Valid signal alignment
+---
 
-Latency & Throughput
+## 5. Target Platform
 
-Latency: 3 clock cycles
+- FPGA: Xilinx Artix-7 XC7A35T  
+- Board: Basys-3  
+- Toolchain: Vivado  
+- Language: Verilog  
 
-Throughput: 1 result per clock (pipelined steady-state)
+---
 
-⚙️ Target Platform
+## 6. Repository Structure
 
-FPGA: Xilinx Artix-7 XC7A35T
-
-Board: Basys-3
-
-Toolchain: Vivado
-
-Language: Verilog
-
-📂 Repository Structure
-rtl/
-  ├── mac4_element.v
-  ├── matrix4x4_core.v
-  ├── control_fsm.v
-  └── top.v
-
-tb/
-  └── tb_matrix4x4.v
-
-constraints/
-  └── basys3.xdc
-
-🧪 Verification Strategy
-
-Self-checking testbench
-
-Randomized matrix inputs
-
-Corner-case testing (max/min signed values)
-
-Latency verification
-
-Waveform validation using Vivado Simulator
-
-📊 Implementation Results (To Fill After Finalization)
-
-After synthesis & implementation, include this section.
-
-📈 Post-Synthesis Metrics
-Metric	Value
-Fmax Achieved	XX MHz
-DSP Utilization	XX / 90
-LUT Utilization	XX / 33K
-FF Utilization	XX
-BRAM Usage	XX
-Power Estimate	XX mW
-⚡ Performance Analysis
-
-Latency: 3 cycles
-
-Throughput: 1 result per clock
-
-Speedup vs sequential implementation: XX×
-
-Resource vs performance trade-off discussion
-
-🔍 Timing Analysis
-
-Worst Negative Slack (WNS): XX ns
-
-Critical Path Location: (e.g., final adder stage)
-
-Pipeline balancing effectiveness
-
-🏆 Design Decisions & Trade-offs
-
-Balanced adder tree vs linear accumulation
-
-DSP inference vs LUT multiplication
-
-Register placement for timing closure
-
-Fixed-point arithmetic selection
-
-Clock enable integration for power optimization
-
-🔮 Scalability
-
-The architecture can be extended to:
-
-8×8 matrix accelerator
-
-Time-multiplexed MAC units
-
-AXI-lite interface integration
-
-RISC-V coprocessor attachment
-
-Systolic array upgrade
-
-💼 Resume Impact
-
-This project demonstrates:
-
-RTL datapath design
-
-Pipelining and timing optimization
-
-DSP-aware FPGA design
-
-Hardware accelerator architecture
-
-Control & valid signal alignment
-
-Performance-driven digital design
-
-📚 Future Improvements
-
-Add AXI interface
-
-Add DMA support
-
-Implement fixed-point Q-format scaling
-
-Compare against systolic array architecture
-
-Port to ASIC synthesis flow
-
-👨‍💻 Author
-
-Pratik Uttam Mhasawade
-B.Tech Electronics & Telecommunication (VLSI Honors)
-Focus: Digital IC Design | AI Hardware | FPGA SoC Architectures
