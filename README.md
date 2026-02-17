@@ -1,2 +1,1 @@
-# stampede-detection-drone
-Smart India Hackathon (Grand Finale 2025) Project
+Designed a fully pipelined 4×4 matrix multiplication accelerator on Artix-7 FPGA using parallel MAC architecture with balanced adder trees and DSP-optimized multipliers achieving 3-cycle compute latency at 75 MHz.
